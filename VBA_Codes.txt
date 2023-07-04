@@ -1,0 +1,191 @@
+
+
+Private Sub comDelete_Click()
+        Dim x As Long
+        Dim y As Long
+        x = Sheets("Worksheet").Range("A" & Rows.Count).End(xlUp).Row
+        For y = 7 To x
+        If Sheets("Worksheet").Cells(y, 1).Value = txtSearch.Text Then
+        Rows(y).Delete
+        
+        End If
+        Next y
+        
+        ''''''''''''''''Clear Boxes'''''''''''''''''''''
+        Me.txtSearch.Value = ""
+        Me.txtID.Value = ""
+        Me.txtName.Value = ""
+        Me.cmbGender.Value = ""
+        Me.txtLocation.Value = ""
+        Me.txtMobile.Value = ""
+        Me.txtMail.Value = ""
+        Me.cmbDepartment.Value = ""
+        Me.cmbJobLevel.Value = ""
+        
+        
+        MsgBox "Data has been deleted from the Worksheet", vbInformation
+        txtID.SetFocus
+End Sub
+
+Private Sub comExit_Click()
+        If MsgBox("Do you want to exit this form?", vbQuestion + vbYesNo, "Confirmation") = vbYes Then
+        Unload Me
+        End If
+End Sub
+
+Private Sub comReset_Click()
+        Unload Me
+        UserForm1.Show
+End Sub
+
+Private Sub comSave_Click()
+        Dim sh As Worksheet
+        Set sh = ThisWorkbook.Sheets("Worksheet")
+        Dim le As Long
+        lr = Sheets("Worksheet").Range("A" & Rows.Count).End(xlUp).Row
+        
+        ''''''''''''''Validation''''''''''''''''''''
+        If Me.txtName.Value = "" Then
+        MsgBox "Please Enter Employee Name", vbCritical
+        Exit Sub
+        End If
+        
+        If IsNumeric(Me.txtID.Value) = False Then
+        MsgBox "Please Enter the correct Employee ID", vbCritical
+        Exit Sub
+        End If
+        
+        '''''''''Add Data in Excel Sheet''''''''
+        With sh
+                .Cells(lr + 1, "A").Value = Me.txtID.Value
+                .Cells(lr + 1, "B").Value = Me.txtName.Value
+                .Cells(lr + 1, "C").Value = Me.cmbGender.Value
+                .Cells(lr + 1, "D").Value = Me.txtLocation.Value
+                .Cells(lr + 1, "E").Value = Me.txtMobile.Value
+                .Cells(lr + 1, "F").Value = Me.txtMail.Value
+                .Cells(lr + 1, "G").Value = Me.cmbDepartment.Value
+                .Cells(lr + 1, "H").Value = Me.cmbJobLevel.Value
+        End With
+        
+        ''''''''''''''''Clear Boxes'''''''''''''''''''''
+        Me.txtID.Value = ""
+        Me.txtName.Value = ""
+        Me.cmbGender.Value = ""
+        Me.txtLocation.Value = ""
+        Me.txtMobile.Value = ""
+        Me.txtMail.Value = ""
+        Me.cmbDepartment.Value = ""
+        Me.cmbJobLevel.Value = ""
+        
+        Call Refresh_data
+        
+        MsgBox "Data has been added in the Worksheet", vbInformation
+        txtID.SetFocus
+        
+End Sub
+
+Sub Refresh_data()
+        Dim sh As Worksheet
+        Set sh = ThisWorkbook.Sheets("Worksheet")
+        Dim le As Long
+        lr = Sheets("Worksheet").Range("A" & Rows.Count).End(xlUp).Row
+        
+        If lr = 6 Then lr = 7
+        With Me.ListBox
+        .ColumnCount = 8
+        .ColumnHeads = True
+        .ColumnWidths = "40,130,90,130,100,80,80,80"
+        .RowSource = "Worksheet!A7:H" & lr
+        End With
+        
+End Sub
+
+Private Sub comSearch_Click()
+        Dim x As Long
+        Dim y As Long
+        x = Sheets("Worksheet").Range("A" & Rows.Count).End(xlUp).Row
+        For y = 7 To x
+        If Sheets("Worksheet").Cells(y, 1).Value = txtSearch.Text Then
+        txtID = Sheets("Worksheet").Cells(y, 1).Value
+        txtName = Sheets("Worksheet").Cells(y, 2).Value
+        cmbGender = Sheets("Worksheet").Cells(y, 3).Value
+        txtLocation = Sheets("Worksheet").Cells(y, 4).Value
+        txtMobile = Sheets("Worksheet").Cells(y, 5).Value
+        txtMail = Sheets("Worksheet").Cells(y, 6).Value
+        cmbDepartment = Sheets("Worksheet").Cells(y, 7).Value
+        cmbJobLevel = Sheets("Worksheet").Cells(y, 8).Value
+        
+        End If
+        Next y
+End Sub
+
+Private Sub comUpdate_Click()
+        Dim x As Long
+        Dim y As Long
+        x = Sheets("Worksheet").Range("A" & Rows.Count).End(xlUp).Row
+        
+        ''''''''''''''Validation''''''''''''''''''''
+        If Me.txtName.Value = "" Then
+        MsgBox "Please Enter Employee Name", vbCritical
+        Exit Sub
+        End If
+        
+        If IsNumeric(Me.txtID.Value) = False Then
+        MsgBox "Please Enter the correct Employee ID", vbCritical
+        Exit Sub
+        End If
+        
+        For y = 7 To x
+        If Sheets("Worksheet").Cells(y, 1).Value = txtSearch.Text Then
+        Sheets("Worksheet").Cells(y, 1).Value = txtID
+        Sheets("Worksheet").Cells(y, 2).Value = txtName
+        Sheets("Worksheet").Cells(y, 3).Value = cmbGender
+        Sheets("Worksheet").Cells(y, 4).Value = txtLocation
+        Sheets("Worksheet").Cells(y, 5).Value = txtMobile
+        Sheets("Worksheet").Cells(y, 6).Value = txtMail
+        Sheets("Worksheet").Cells(y, 7).Value = cmbDepartment
+        cmbJobLevel = Sheets("Worksheet").Cells(y, 8).Value
+        
+        End If
+        Next y
+        
+        ''''''''''''''''Clear Boxes'''''''''''''''''''''
+        Me.txtSearch.Value = ""
+        Me.txtID.Value = ""
+        Me.txtName.Value = ""
+        Me.cmbGender.Value = ""
+        Me.txtLocation.Value = ""
+        Me.txtMobile.Value = ""
+        Me.txtMail.Value = ""
+        Me.cmbDepartment.Value = ""
+        Me.cmbJobLevel.Value = ""
+        
+        MsgBox "Data has been updated in the Worksheet", vbInformation
+        txtID.SetFocus
+        
+End Sub
+
+
+Private Sub ListBox_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+        txtSearch.Text = ListBox.Column(0)
+        If txtSearch.Text = ListBox.Column(0) Then
+        txtID.Text = Me.ListBox.Column(0)
+        txtName.Text = Me.ListBox.Column(1)
+        cmbGender.Text = Me.ListBox.Column(2)
+        txtLocation.Text = Me.ListBox.Column(3)
+        txtMobile.Text = Me.ListBox.Column(4)
+        txtMail.Text = Me.ListBox.Column(5)
+        cmbDepartment.Text = Me.ListBox.Column(6)
+        cmbJobLevel.Text = Me.ListBox.Column(7)
+        
+        End If
+End Sub
+
+Private Sub UserForm_Activate()
+        cmbGender.List = Array("Male", "Female")
+        cmbDepartment.List = Array("Finance", "HR", "Sales", "Engineering", "Quality Assurance", "Business Development")
+        cmbJobLevel.List = Array(2, 3, 4, 5, 6, 7, 8)
+        
+        Call Refresh_data
+End Sub
+
